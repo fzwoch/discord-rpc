@@ -3,11 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DiscordRpcBlueprint.generated.h"
 #include "Engine.h"
+
+#include "DiscordRpcBlueprint.generated.h"
 
 // unreal's header tool hates clang-format
 // clang-format off
+
+
+/**
+* Ask to join callback data
+*/
+USTRUCT(BlueprintType)
+struct FDiscordJoinRequest {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(BlueprintReadOnly)
+    FString userId;
+    UPROPERTY(BlueprintReadOnly)
+    FString username;
+    UPROPERTY(BlueprintReadOnly)
+    FString discriminator;
+    UPROPERTY(BlueprintReadOnly)
+    FString avatar;
+};
+
 
 DECLARE_LOG_CATEGORY_EXTERN(Discord, Log, All);
 
@@ -16,6 +36,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDiscordDisconnected, int, errorCod
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDiscordErrored, int, errorCode, const FString&, errorMessage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDiscordJoin, const FString&, joinSecret);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDiscordSpectate, const FString&, spectateSecret);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDiscordJoinRequest, const FDiscordJoinRequest&, joinRequest);
 
 // clang-format on
 
@@ -118,6 +139,11 @@ public:
               meta = (DisplayName = "When Discord user presses spectate", Keywords = "Discord rpc"),
               Category = "Discord")
     FDiscordSpectate OnSpectate;
+
+    UPROPERTY(BlueprintAssignable,
+        meta = (DisplayName = "When Discord another user sends a join request", Keywords = "Discord rpc"),
+        Category = "Discord")
+    FDiscordJoinRequest OnJoinRequest;
 
     UPROPERTY(BlueprintReadWrite,
               meta = (DisplayName = "Rich presence info", Keywords = "Discord rpc"),
