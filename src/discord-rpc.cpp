@@ -154,6 +154,10 @@ static void Discord_UpdateConnection(void)
                     if (userId && username && joinReq) {
                         StringCopy(joinReq->userId, userId);
                         StringCopy(joinReq->username, username);
+                        auto discriminator = GetStrMember(user, "discriminator");
+                        if (discriminator) {
+                            StringCopy(joinReq->discriminator, discriminator);
+                        }
                         if (avatar) {
                             StringCopy(joinReq->avatar, avatar);
                         }
